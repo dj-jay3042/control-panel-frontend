@@ -68,12 +68,12 @@ const Analytics = () => {
         const getVisits = async () => {
             const response = await getRequest("/api/dashboard/getVisits", {}, headers);
             setVisitDetails(response.map(item => item.visit_count));
-            setTotalVisitCount(visitDetails.reduce((acc, count) => acc + count, 0));
+            setTotalVisitCount(response.reduce((sum: any, item: any) => sum + item.visit_count, 0));
         }
         const getBotVisits = async () => {
             const response = await getRequest("/api/dashboard/getBotVisits", {}, headers);
             setBotVisit(response.map(item => item.visit_count));
-            setBotVisitCount(botVisit.reduce((acc, count) => acc + count, 0));
+            setBotVisitCount(response.reduce((sum: any, item: any) => sum + item.visit_count, 0));
         }
         const getBankBalance = async () => {
             const response = await getRequest("/api/dashboard/getBankBalance", {}, headers);
