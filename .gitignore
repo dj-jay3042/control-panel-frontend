@@ -9,7 +9,6 @@ lerna-debug.log*
 /src/config.tsx
 
 node_modules
-dist
 dist-ssr
 *.local
 
