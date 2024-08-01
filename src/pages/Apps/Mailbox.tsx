@@ -10,6 +10,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../../store';
 import { setPageTitle } from '../../store/themeConfigSlice';
+import { postRequest } from '../../utils/Request';
 
 const Mailbox = () => {
     const dispatch = useDispatch();
@@ -804,6 +805,11 @@ const Mailbox = () => {
         displayDescription: '',
     };
 
+    const headers = {
+        "Content-Type": "application/json",
+        "authorization": "Bearer " + localStorage.getItem('accessToken')
+    };
+
     const [isShowMailMenu, setIsShowMailMenu] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [selectedTab, setSelectedTab] = useState('inbox');
@@ -813,6 +819,7 @@ const Mailbox = () => {
     const [selectedMail, setSelectedMail] = useState<any>(null);
     const [params, setParams] = useState<any>(JSON.parse(JSON.stringify(defaultParams)));
     const [pagedMails, setPagedMails] = useState<any>([]);
+    const [sendingMail, setSendingMail] = useState(false);
 
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
 
@@ -1051,13 +1058,17 @@ const Mailbox = () => {
         clearSelection();
     };
 
-    const saveMail = (type: any, id: any) => {
+    const saveMail = async (type: any, id: any) => {
         if (!params.to) {
             showMessage('To email address is required.', 'error');
             return false;
         }
         if (!params.title) {
             showMessage('Title of email is required.', 'error');
+            return false;
+        }
+        if (!params.name) {
+            showMessage('Name for email is required.', 'error');
             return false;
         }
 
@@ -1105,8 +1116,20 @@ const Mailbox = () => {
             //saved to sent mail
             obj.type = 'sent_mail';
             mailList.splice(0, 0, obj);
+            console.log(params);
+            const mailDetails = {
+                name: params.name,
+                title: params.title,
+                subject: params.subject,
+                to: params.to,
+                from: params.from,
+                content: params.description.replace("<p><br></p>", "")
+            };
+            setSendingMail(true);
+            const response = await postRequest("/api/email/sendEmail", mailDetails, {}, headers);
+            setSendingMail(false);
             searchMails();
-            showMessage('Mail has been sent successfully.');
+            showMessage(response.message);
         }
 
         setSelectedMail(null);
@@ -2466,11 +2489,15 @@ const Mailbox = () => {
                                 </div>
 
                                 <div>
-                                    <input id="cc" type="text" className="form-input" placeholder="Enter Cc" defaultValue={params.cc} onChange={(e) => changeValue(e)} />
+                                    <input id="title" type="text" className="form-input" placeholder="Enter Title" defaultValue={params.title} onChange={(e) => changeValue(e)} readOnly={sendingMail} />
                                 </div>
 
                                 <div>
-                                    <input id="title" type="text" className="form-input" placeholder="Enter Subject" defaultValue={params.title} onChange={(e) => changeValue(e)} />
+                                    <input id="subject" type="text" className="form-input" placeholder="Enter Subject" defaultValue={params.subject} onChange={(e) => changeValue(e)} readOnly={sendingMail} />
+                                </div>
+
+                                <div>
+                                    <input id="name" type="text" className="form-input" placeholder="Enter Name" defaultValue={params.name} onChange={(e) => changeValue(e)} readOnly={sendingMail} />
                                 </div>
 
                                 <div className="h-fit">
@@ -2495,18 +2522,20 @@ const Mailbox = () => {
                                         className="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
                                         multiple
                                         accept="image/*,.zip,.pdf,.xls,.xlsx,.txt.doc,.docx"
+                                        readOnly={sendingMail}
                                         required
                                     />
                                 </div>
                                 <div className="flex items-center ltr:ml-auto rtl:mr-auto mt-8">
-                                    <button type="button" className="btn btn-outline-danger ltr:mr-3 rtl:ml-3" onClick={closeMsgPopUp}>
+                                    <button disabled={sendingMail} type="button" className="btn btn-outline-danger ltr:mr-3 rtl:ml-3" onClick={closeMsgPopUp}>
                                         Close
                                     </button>
-                                    <button type="button" className="btn btn-success ltr:mr-3 rtl:ml-3" onClick={() => saveMail('save', null)}>
+                                    <button disabled={sendingMail} type="button" className="btn btn-success ltr:mr-3 rtl:ml-3" onClick={() => saveMail('save', null)}>
                                         Save
                                     </button>
                                     <button type="button" className="btn btn-primary" onClick={() => saveMail('send', params.id)}>
-                                        Send
+                                        {sendingMail ? <span className="animate-spin border-2 border-white border-l-transparent rounded-full w-5 h-5 ltr:mr-4 rtl:ml-4 inline-block align-middle"></span> : ""}
+                                        {sendingMail ? "Sending Mail" : "Send"}
                                     </button>
                                 </div>
                             </form>
