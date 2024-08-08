@@ -51,7 +51,7 @@ const ItemList: React.FC = () => {
                     "Content-Type": "application/json",
                     "authorization": "Bearer " + localStorage.getItem('accessToken')
                 };
-                const data = await postRequest('/v1/getMenuItems', {}, {}, headers);
+                const data = await postRequest('/v1/menu/getMenuItems', {}, {}, headers);
                 if (data.message == "Unauthorized") {
                     navigate("/login");
                 }
