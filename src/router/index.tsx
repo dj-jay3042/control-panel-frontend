@@ -18,7 +18,7 @@ import PrivateRoute from '../components/Layouts/PrivateRoute';
 
 // Static component map with lazy loading
 const fetchRoutes = async () => {
-    let response = await getRequest('/api/routes'); // Adjust the endpoint according to your API
+    let response = await getRequest('/v1/routes'); // Adjust the endpoint according to your API
     return response;
 };
 

@@ -160,7 +160,7 @@ const Basic = () => {
                 "Content-Type": "application/json",
                 "accessToken": localStorage.getItem('accessToken')
             };
-            const data = await postRequest('/api/contactData', {}, {}, headers); // Change this to your actual API endpoint
+            const data = await postRequest('/v1/contactData', {}, {}, headers); // Change this to your actual API endpoint
             setData(data);
             const sortedData = sortBy(data, 'id');
             setInitialRecords(sortedData);

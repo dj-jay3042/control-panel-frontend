@@ -89,7 +89,7 @@ const Chat = () => {
 
     useEffect(() => {
         const getSms = async () => {
-            const response = await getRequest("/api/getSms", {}, headers);
+            const response = await getRequest("/v1/getSms", {}, headers);
             setContactList(response);
             setFilteredItems(response);
         }
@@ -132,7 +132,7 @@ const Chat = () => {
                 to: selectedUser.userId,
                 content: textMessage
             };
-            let response = await postRequest("/api/sendSms", messageData, {}, headers);
+            let response = await postRequest("/v1/sendSms", messageData, {}, headers);
 
             let date = getCurrentFormattedDate();
             if (response.status == "success") {

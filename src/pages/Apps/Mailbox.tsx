@@ -1126,7 +1126,7 @@ const Mailbox = () => {
                 content: params.description.replace("<p><br></p>", "")
             };
             setSendingMail(true);
-            const response = await postRequest("/api/email/sendEmail", mailDetails, {}, headers);
+            const response = await postRequest("/v1/email/sendEmail", mailDetails, {}, headers);
             setSendingMail(false);
             searchMails();
             showMessage(response.message);

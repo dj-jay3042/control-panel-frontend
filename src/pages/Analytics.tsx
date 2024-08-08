@@ -40,7 +40,7 @@ const Analytics = () => {
                     "Content-Type": "application/json",
                     "accessToken": localStorage.getItem('accessToken')
                 };
-                await postRequest("/api/updateBankBalance", { newBankBalance: newBankBalance }, {}, headers);
+                await postRequest("/v1/updateBankBalance", { newBankBalance: newBankBalance }, {}, headers);
                 setBankBalance(newBankBalance);
             }
         }
@@ -51,7 +51,7 @@ const Analytics = () => {
         if (addBankBalance) {
             if (addValue != 0) {
                 const newBalance = parseFloat(bankBalance) + parseFloat(addValue);
-                await postRequest("/api/updateBankBalance", {
+                await postRequest("/v1/updateBankBalance", {
                     newBankBalance: newBalance
                 }, {}, headers);
                 setBankBalance(newBalance);
@@ -62,21 +62,21 @@ const Analytics = () => {
     }
     useEffect(() => {
         const getOsDetails = async () => {
-            const response = await getRequest("/api/dashboard/getVisitorOs", {}, headers);
+            const response = await getRequest("/v1/dashboard/getVisitorOs", {}, headers);
             setOsDetails(response);
         }
         const getVisits = async () => {
-            const response = await getRequest("/api/dashboard/getVisits", {}, headers);
+            const response = await getRequest("/v1/dashboard/getVisits", {}, headers);
             setVisitDetails(response.map(item => item.visit_count));
             setTotalVisitCount(response.reduce((sum: any, item: any) => sum + item.visit_count, 0));
         }
         const getBotVisits = async () => {
-            const response = await getRequest("/api/dashboard/getBotVisits", {}, headers);
+            const response = await getRequest("/v1/dashboard/getBotVisits", {}, headers);
             setBotVisit(response.map(item => item.visit_count));
             setBotVisitCount(response.reduce((sum: any, item: any) => sum + item.visit_count, 0));
         }
         const getBankBalance = async () => {
-            const response = await getRequest("/api/dashboard/getBankBalance", {}, headers);
+            const response = await getRequest("/v1/dashboard/getBankBalance", {}, headers);
             setBankBalance(response.bankBalance);
         }
         getVisits();

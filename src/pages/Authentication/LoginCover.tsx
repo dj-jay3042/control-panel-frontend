@@ -39,7 +39,7 @@ const LoginCover = () => {
 
     const sendOtp = async () => {
         setOtpSending(true);
-        const response = await postRequest("/api/sendOtp", { username, password });
+        const response = await postRequest("/v1/sendOtp", { username, password });
         setLoginKey(response.loginKey);
         setOtpSent(response.otpSent);
         setOtpSending(false);
