@@ -36,10 +36,6 @@ const Analytics = () => {
     const upgradeBankBalance = async () => {
         if (updateBankBalance) {
             if (bankBalance != newBankBalance) {
-                const headers = {
-                    "Content-Type": "application/json",
-                    "accessToken": localStorage.getItem('accessToken')
-                };
                 await postRequest("/v1/updateBankBalance", { newBankBalance: newBankBalance }, {}, headers);
                 setBankBalance(newBankBalance);
             }

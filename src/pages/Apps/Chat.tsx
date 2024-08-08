@@ -72,7 +72,7 @@ const Chat = () => {
     const dispatch = useDispatch();
     const headers = {
         "Content-Type": "application/json",
-        "accessToken": localStorage.getItem('accessToken')
+        "authorization": "Bearer " + localStorage.getItem('accessToken')
     };
     useEffect(() => {
         dispatch(setPageTitle('Chat'));
@@ -89,7 +89,7 @@ const Chat = () => {
 
     useEffect(() => {
         const getSms = async () => {
-            const response = await getRequest("/v1/getSms", {}, headers);
+            const response = await getRequest("/v1/sms/getSms", {}, headers);
             setContactList(response);
             setFilteredItems(response);
         }
@@ -132,7 +132,7 @@ const Chat = () => {
                 to: selectedUser.userId,
                 content: textMessage
             };
-            let response = await postRequest("/v1/sendSms", messageData, {}, headers);
+            let response = await postRequest("/v1/sms/sendSms", messageData, {}, headers);
 
             let date = getCurrentFormattedDate();
             if (response.status == "success") {
